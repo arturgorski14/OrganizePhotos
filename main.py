@@ -1,16 +1,22 @@
-# This is a sample Python script.
+import tkinter as tk
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+from select_folder import select_folder
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+def main():
+    root_window = tk.Tk()
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    btn = tk.Button(
+        root_window,
+        text="Wybierz folder ze zdjęciami!",
+        command=select_folder,
+        padx=50,
+        pady=50,
+    )
+    btn.pack()
+
+    root_window.mainloop()
+
+
+if __name__ == "__main__":
+    main()
