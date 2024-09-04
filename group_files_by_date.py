@@ -1,3 +1,4 @@
+import logging
 from collections import defaultdict
 from enum import Enum
 from typing import Dict, List
@@ -57,4 +58,5 @@ def group_files_by_date(
         if date_part:
             grouped_files[date_part].append(filename)
 
+    logging.info(f"Number of groups: {len(grouped_files)}\nGroups themselves: {grouped_files.keys()}")
     return dict(grouped_files)

@@ -1,22 +1,13 @@
-import tkinter as tk
+import logging
 
-from select_folder import select_folder
+from organize_photos_app import GreetingApp, OrganizePhotos
 
 
 def main():
-    root_window = tk.Tk()
-
-    btn = tk.Button(
-        root_window,
-        text="Wybierz folder ze zdjęciami!",
-        command=select_folder,
-        padx=50,
-        pady=50,
-    )
-    btn.pack()
-
-    root_window.mainloop()
+    app = OrganizePhotos()
+    app.mainloop()
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     main()
