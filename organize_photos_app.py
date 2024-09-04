@@ -74,9 +74,7 @@ class OrganizePhotos(tk.Tk):
         # Trace changes to the grouping_var to update the label
         self.grouping_var.trace("w", self.update_label)
 
-        tk.Button(
-            self, text="Uruchom!", command=self.organize
-        ).grid(row=3, column=0)
+        tk.Button(self, text="Uruchom!", command=self.organize).grid(row=3, column=0)
 
     def select_folder(self) -> None:
         folder_path = select_folder()
@@ -118,7 +116,4 @@ class OrganizePhotos(tk.Tk):
         files = get_matching_files(folder_path)
         grouping_level = self.get_grouping_level()
 
-        grouped_files = group_files_by_date(
-            files, grouping_level
-        )
-
+        grouped_files = group_files_by_date(files, grouping_level)
