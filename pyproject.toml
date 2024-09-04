@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "organizephotos"
+version = "0.1.0"
+description = ""
+authors = ["arturgorski14 <arturgorski14@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
