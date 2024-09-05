@@ -17,6 +17,9 @@ class MainWindow(tk.Tk):
 
         # initialize variables
         self.grouping_var = tk.IntVar(value=1)  # Default to GroupingLevel.YYYY
+        self.grouping_text = tk.StringVar(value=self.get_grouping_text())
+        # Trace changes to the grouping_var to update the label
+        self.grouping_var.trace("w", self.update_label)
 
         # initialize widgets
         self.folder_label = tk.Label(self, text="Brak wybranego folderu")
@@ -31,6 +34,12 @@ class MainWindow(tk.Tk):
             self, text="Po roku, miesiącu i dniu", variable=self.grouping_var, value=3
         )
         debug_radio_choice_label = tk.Label(self, text=self.grouping_var.get())
+        # Create a StringVar to be used for the label's text
+        debug_radio_choice_label_text = tk.Label(self, textvariable=self.grouping_text)
+        run_button = tk.Button(self, text="Uruchom!", command=self.organize)
+        debug_display_message_btn = tk.Button(
+            self, text="DEBUG - Display message", command=self.display_message_box
+        )
 
         # placement on the grid
         self.folder_label.grid(row=0, column=1)
@@ -41,19 +50,9 @@ class MainWindow(tk.Tk):
         radio_btn2.grid(row=1, column=1)
         radio_btn3.grid(row=1, column=2)
         debug_radio_choice_label.grid(row=2, column=0)
-
-        # Create a StringVar to be used for the label's text
-        self.grouping_text = tk.StringVar(value=self.get_grouping_text())
-        tk.Label(self, textvariable=self.grouping_text).grid(row=2, column=0)
-
-        # Trace changes to the grouping_var to update the label
-        self.grouping_var.trace("w", self.update_label)
-
-        tk.Button(self, text="Uruchom!", command=self.organize).grid(row=3, column=0)
-
-        tk.Button(
-            self, text="DEBUG - Display message", command=self.display_message_box
-        ).grid(row=4, column=0)
+        debug_radio_choice_label_text.grid(row=2, column=0)
+        run_button.grid(row=3, column=0)
+        debug_display_message_btn.grid(row=4, column=0)
 
     def select_folder(self) -> None:
         folder_path = select_folder()
