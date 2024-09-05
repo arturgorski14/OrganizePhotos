@@ -113,10 +113,10 @@ class OrganizePhotos(tk.Toplevel):
         self.folder_path = folder_path
         self.grouping_level = grouping_level
 
-        progress_bar = ttk.Progressbar(self, orient="horizontal", mode="indeterminate", length=300)
+        self.progress_bar = ttk.Progressbar(self, orient="horizontal", mode="indeterminate", length=300)
         self.progress_bar_label = tk.Label(self, text="Rozpoczynam.")
 
-        progress_bar.pack(pady=20)
+        self.progress_bar.pack(pady=20)
         self.progress_bar_label.pack(pady=10)
 
     def destroy(self):
@@ -129,11 +129,17 @@ class OrganizePhotos(tk.Toplevel):
         grouping_level = self.grouping_level
 
         files = get_matching_files(folder_path)
+        self.progress_bar.step(33)
         self.__update_label(f"{len(files)} plików może zostać przeniesionych.")
+
         grouped_files = group_files_by_date(files, grouping_level)
+        self.progress_bar.step(33)
         self.__update_label(f"Liczba nowych folderów: {len(grouped_files)}\nI ich nazwy: {grouped_files.keys()}")
+
         successes, failures = move_files(grouped_files, Path(folder_path))
+        self.progress_bar.step(33)
         self.__update_label(f"Przeniesiono {successes} z {successes + failures} plików")
+
         self.display_message_box(successes, failures)
 
     def display_message_box(self, successes: int = 20, failures: int = 5) -> None:
