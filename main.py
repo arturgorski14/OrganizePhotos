@@ -1,10 +1,10 @@
 import logging
 
-from organize_photos import OrganizePhotos
+from organize_photos import MainWindow
 
 
 def main():
-    app = OrganizePhotos()
+    app = MainWindow()
     app.mainloop()
 
 

@@ -9,7 +9,7 @@ from move_files import move_files
 from select_folder import select_folder
 
 
-class OrganizePhotos(tk.Tk):
+class MainWindow(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Organizer zdjęć")
@@ -107,7 +107,7 @@ class OrganizePhotos(tk.Tk):
 
 def organize_photos() -> None:
     logging.basicConfig(level=logging.INFO)
-    app = OrganizePhotos()
+    app = MainWindow()
     app.mainloop()
 
 
