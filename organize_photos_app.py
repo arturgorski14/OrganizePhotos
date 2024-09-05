@@ -1,41 +1,11 @@
 import tkinter as tk
+from pathlib import Path
 from tkinter import ttk
 
 from get_matching_files import get_matching_files
 from group_files_by_date import GroupingLevel, group_files_by_date
+from move_files import move_files
 from select_folder import select_folder
-
-
-class GreetingApp(tk.Tk):
-    def __init__(self):
-        super().__init__()
-        self.title("Greeting Application")
-        self.geometry("300x300")
-
-        self.name_var = tk.StringVar()
-        self.name_var.trace("w", self.create_greeting_message)
-
-        self.create_widgets()
-
-    def create_widgets(self):
-        self.description_label = tk.Label(self, text="Enter your name:")
-        self.description_label.grid(column=0, row=0)
-
-        self.entry = tk.Entry(self, textvariable=self.name_var)
-        self.entry.grid(column=1, row=0)
-        self.entry.focus()
-
-        self.greeting_label = tk.Label(self)
-        self.greeting_label.grid(column=0, row=1, columnspan=2)
-
-    def create_greeting_message(self, *args):
-        name_entered = self.name_var.get()
-
-        greeting_message = ""
-        if name_entered != "":
-            greeting_message = "Hello " + name_entered
-
-        self.greeting_label["text"] = greeting_message
 
 
 class OrganizePhotos(tk.Tk):
@@ -117,3 +87,4 @@ class OrganizePhotos(tk.Tk):
         grouping_level = self.get_grouping_level()
 
         grouped_files = group_files_by_date(files, grouping_level)
+        move_files(grouped_files, Path(folder_path))

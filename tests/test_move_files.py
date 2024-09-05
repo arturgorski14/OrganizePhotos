@@ -35,7 +35,7 @@ def test_move_files(setup_files):
     destination_folder.mkdir()
 
     # Call the move_files function
-    move_files(grouped_files, str(destination_folder))
+    move_files(grouped_files, destination_folder)
 
     # Verify that the files were moved to the correct locations
     for group, files in grouped_files.items():
