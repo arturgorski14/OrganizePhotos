@@ -15,28 +15,32 @@ class MainWindow(tk.Tk):
         self.title("Organizer zdjęć")
         self.geometry("300x300")
 
+        # initialize variables
+        self.grouping_var = tk.IntVar(value=1)  # Default to GroupingLevel.YYYY
+
+        # initialize widgets
         self.folder_label = tk.Label(self, text="Brak wybranego folderu")
-        self.folder_label.grid(row=0, column=1)
         self.folder_btn = tk.Button(
             self, text="Wybierz folder!", command=self.select_folder
         )
+        radio_btn1 = tk.Radiobutton(self, text="Po roku", variable=self.grouping_var, value=1)
+        radio_btn2 = tk.Radiobutton(
+            self, text="Po roku i miesiącu", variable=self.grouping_var, value=2
+        )
+        radio_btn3 = tk.Radiobutton(
+            self, text="Po roku, miesiącu i dniu", variable=self.grouping_var, value=3
+        )
+        debug_radio_choice_label = tk.Label(self, text=self.grouping_var.get())
+
+        # placement on the grid
+        self.folder_label.grid(row=0, column=1)
         self.folder_btn.grid(row=0, column=0)
-
-        # Create a variable to hold the selected grouping level
-        self.grouping_var = tk.IntVar(value=1)  # Default to GroupingLevel.YYYY
-
-        # Create radio buttons for grouping options
-        tk.Radiobutton(self, text="Po roku", variable=self.grouping_var, value=1).grid(
+        radio_btn1.grid(
             row=1, column=0
         )
-        tk.Radiobutton(
-            self, text="Po roku i miesiącu", variable=self.grouping_var, value=2
-        ).grid(row=1, column=1)
-        tk.Radiobutton(
-            self, text="Po roku, miesiącu i dniu", variable=self.grouping_var, value=3
-        ).grid(row=1, column=2)
-
-        tk.Label(self, text=self.grouping_var.get()).grid(row=2, column=0)
+        radio_btn2.grid(row=1, column=1)
+        radio_btn3.grid(row=1, column=2)
+        debug_radio_choice_label.grid(row=2, column=0)
 
         # Create a StringVar to be used for the label's text
         self.grouping_text = tk.StringVar(value=self.get_grouping_text())
