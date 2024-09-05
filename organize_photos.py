@@ -1,3 +1,4 @@
+import logging
 import tkinter as tk
 from pathlib import Path
 from tkinter import ttk
@@ -88,3 +89,13 @@ class OrganizePhotos(tk.Tk):
 
         grouped_files = group_files_by_date(files, grouping_level)
         move_files(grouped_files, Path(folder_path))
+
+
+def organize_photos() -> None:
+    logging.basicConfig(level=logging.INFO)
+    app = OrganizePhotos()
+    app.mainloop()
+
+
+if __name__ == "__main__":
+    organize_photos()

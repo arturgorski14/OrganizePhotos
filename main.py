@@ -1,6 +1,6 @@
 import logging
 
-from organize_photos_app import OrganizePhotos
+from organize_photos import OrganizePhotos
 
 
 def main():
