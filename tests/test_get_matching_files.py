@@ -1,7 +1,5 @@
 import logging
 
-import pytest
-
 from get_matching_files import get_matching_files
 
 

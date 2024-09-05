@@ -1,12 +1,13 @@
 import logging
 import os
 import re
+from typing import List
 
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger(__name__)
 
 
-def get_matching_files(folder_path):
+def get_matching_files(folder_path) -> List[str]:
     if not folder_path:
         return []
 

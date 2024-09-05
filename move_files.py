@@ -5,7 +5,9 @@ from pathlib import Path
 from typing import Dict, List, Tuple
 
 
-def move_files(grouped_files: Dict[str, List[str]], root_folder: Path) -> Tuple[int, int]:
+def move_files(
+    grouped_files: Dict[str, List[str]], root_folder: Path
+) -> Tuple[int, int]:
     """
     Moves files into their corresponding folders based on the grouping.
 

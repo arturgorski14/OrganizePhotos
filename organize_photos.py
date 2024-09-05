@@ -1,8 +1,7 @@
 import logging
 import tkinter as tk
 from pathlib import Path
-from tkinter import messagebox
-from tkinter import ttk
+from tkinter import messagebox, ttk
 
 from get_matching_files import get_matching_files
 from group_files_by_date import GroupingLevel, group_files_by_date
@@ -48,7 +47,9 @@ class OrganizePhotos(tk.Tk):
 
         tk.Button(self, text="Uruchom!", command=self.organize).grid(row=3, column=0)
 
-        tk.Button(self, text="DEBUG - Display message", command=self.display_message_box).grid(row=4, column=0)
+        tk.Button(
+            self, text="DEBUG - Display message", command=self.display_message_box
+        ).grid(row=4, column=0)
 
     def select_folder(self) -> None:
         folder_path = select_folder()
@@ -95,7 +96,7 @@ class OrganizePhotos(tk.Tk):
 
         self.display_message_box(successes, failures)
 
-    def display_message_box(self, successes: int=20, failures: int=5) -> None:
+    def display_message_box(self, successes: int = 20, failures: int = 5) -> None:
         title = "Przetwarzanie zakończone"
         msg = f"Przeniesiono {successes} z {successes+failures} plików"
         if not failures:
