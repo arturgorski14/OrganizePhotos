@@ -3,7 +3,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from group_files_by_date import GroupingLevel
+from grouping_level import GroupingLevel
 from organize_photos import OrganizePhotos
 
 
