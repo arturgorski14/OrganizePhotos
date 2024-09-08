@@ -147,7 +147,7 @@ class OrganizePhotos(tk.Toplevel):
 
         step_increment = self.__determine_progress_bar_step_increment(len(files))
 
-        grouped_files = group_files_by_date(files, grouping_level)
+        grouped_files = self.group_files_by_date(files, grouping_level)
         self.__update_label(
             f"Liczba nowych folderów: {len(grouped_files)}\nI ich nazwy: {grouped_files.keys()}"
         )
@@ -220,7 +220,7 @@ class OrganizePhotos(tk.Toplevel):
         return successes, failures
 
     def group_files_by_date(
-            self, file_list: List[str], grouping: GroupingLevel
+        self, file_list: List[str], grouping: GroupingLevel
     ) -> Dict[str, List[str]]:
         """
         Groups files by date based on the filename and the specified grouping level.

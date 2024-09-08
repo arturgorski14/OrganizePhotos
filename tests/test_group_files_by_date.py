@@ -30,7 +30,11 @@ class TestGroupFilesByDate:
                 GroupingLevel.YYYY,
                 {
                     "2023": ["IMG_20230901_something.jpg"],
-                    "2024": ["VID_20240902_something.mp4", "IMG_20241001_something.jpg", "PANO_20241001_something.jpg"],
+                    "2024": [
+                        "VID_20240902_something.mp4",
+                        "IMG_20241001_something.jpg",
+                        "PANO_20241001_something.jpg",
+                    ],
                 },
             ),
             (
@@ -44,7 +48,10 @@ class TestGroupFilesByDate:
                 {
                     "2023.09": ["IMG_20230901_something.jpg"],
                     "2024.09": ["VID_20240902_something.mp4"],
-                    "2024.10": ["IMG_20241001_something.jpg", "PANO_20241001_something.jpg"],
+                    "2024.10": [
+                        "IMG_20241001_something.jpg",
+                        "PANO_20241001_something.jpg",
+                    ],
                 },
             ),
             (
@@ -58,7 +65,10 @@ class TestGroupFilesByDate:
                 {
                     "2023.09.01": ["IMG_20230901_something.jpg"],
                     "2024.09.02": ["VID_20240902_something.mp4"],
-                    "2024.10.01": ["IMG_20241001_something.jpg", "PANO_20241001_something.jpg"],
+                    "2024.10.01": [
+                        "IMG_20241001_something.jpg",
+                        "PANO_20241001_something.jpg",
+                    ],
                 },
             ),
         ],
