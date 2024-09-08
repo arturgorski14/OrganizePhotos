@@ -128,6 +128,7 @@ class OrganizePhotos(tk.Toplevel):
             self, orient=tk.HORIZONTAL, length=self.PROGRESS_BAR_LENGTH
         )
         self.progress_bar_label = tk.Label(self, text="Rozpoczynam.")
+        self.step_increment = self.PROGRESS_BAR_LENGTH - 0.1
 
         self.progress_bar.pack(pady=20)
         self.progress_bar_label.pack(pady=10)
@@ -142,10 +143,10 @@ class OrganizePhotos(tk.Toplevel):
         grouping_level = self.grouping_level
 
         files = self.get_matching_files(folder_path)
-        self.progress_bar.step(33)
         self.__update_label(f"{len(files)} plików może zostać przeniesionych.")
+        self.step_increment = self.__determine_progress_bar_step_increment(len(files))
 
-        step_increment = self.__determine_progress_bar_step_increment(len(files))
+        self.progress_bar.step(self.step_increment * self.NUMBER_OF_STEPS)  # dirty, but better than artificial loop
 
         grouped_files = self.group_files_by_date(files, grouping_level)
         self.__update_label(
@@ -153,7 +154,6 @@ class OrganizePhotos(tk.Toplevel):
         )
 
         successes, failures = self.move_files(grouped_files, Path(folder_path))
-        self.progress_bar.step(33)
         self.__update_label(f"Przeniesiono {successes} z {successes + failures} plików")
 
         self.__display_message_box(successes, failures)
@@ -238,6 +238,7 @@ class OrganizePhotos(tk.Toplevel):
             date_part = self.__extract_date_part(filename, grouping)
             if date_part:
                 grouped_files[date_part].append(filename)
+            self.progress_bar.step(self.step_increment)
 
         logging.info(
             f"Number of groups: {len(grouped_files)}\nGroups themselves: {grouped_files.keys()}"
@@ -280,7 +281,9 @@ class OrganizePhotos(tk.Toplevel):
             messagebox.showwarning(title, msg)
 
     def __determine_progress_bar_step_increment(self, files_count: int):
-        return self.PROGRESS_BAR_LENGTH / self.NUMBER_OF_STEPS / files_count
+        if files_count:
+            return (self.PROGRESS_BAR_LENGTH - 0.1) / self.NUMBER_OF_STEPS / files_count
+        return self.step_increment
 
     def __update_label(self, desired_text: str) -> None:
         self.progress_bar_label["text"] += f"\n\n{desired_text}"
