@@ -43,12 +43,12 @@ class MainWindow(tk.Tk):
         )
 
         # placement on the grid
-        self.folder_label.grid(row=0, column=1)
-        self.folder_btn.grid(row=0, column=0)
-        radio_btn1.grid(row=1, column=0)
-        radio_btn2.grid(row=1, column=1)
-        radio_btn3.grid(row=1, column=2)
-        self.run_button.grid(row=3, column=0)
+        self.folder_label.pack()
+        self.folder_btn.pack()
+        radio_btn1.pack()
+        radio_btn2.pack()
+        radio_btn3.pack()
+        self.run_button.pack()
 
     def select_folder(self) -> None:
         folder_path = select_folder()
