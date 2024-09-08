@@ -30,9 +30,7 @@ class TestMoveFiles:
     @pytest.fixture
     def setup_app(self, tmp_path):
         # Create an instance of OrganizePhotos with dummy folder_path and grouping level
-        app = OrganizePhotos(
-            str(tmp_path), grouping_level=GroupingLevel.YYYY
-        )
+        app = OrganizePhotos(str(tmp_path), grouping_level=GroupingLevel.YYYY)
 
         # Mock GUI components
         app.progress_bar = MagicMock()

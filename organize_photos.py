@@ -1,12 +1,12 @@
 import logging
 import os
+import re
 import shutil
 import tkinter as tk
 from pathlib import Path
 from tkinter import messagebox, ttk
 from typing import Dict, List, Tuple
 
-from get_matching_files import get_matching_files
 from group_files_by_date import GroupingLevel, group_files_by_date
 from select_folder import select_folder
 
@@ -140,7 +140,7 @@ class OrganizePhotos(tk.Toplevel):
         folder_path = self.folder_path
         grouping_level = self.grouping_level
 
-        files = get_matching_files(folder_path)
+        files = self.get_matching_files(folder_path)
         self.progress_bar.step(33)
         self.__update_label(f"{len(files)} plików może zostać przeniesionych.")
 
@@ -156,6 +156,29 @@ class OrganizePhotos(tk.Toplevel):
         self.__update_label(f"Przeniesiono {successes} z {successes + failures} plików")
 
         self.__display_message_box(successes, failures)
+
+    def get_matching_files(self, folder_path) -> List[str]:
+        if not folder_path:
+            return []
+
+        # Regular expression patterns for the file formats
+        patterns = [
+            r"^IMG_\d{8}_.*\.jpg$",  # Matches IMG_YYYYMMDD_*.jpg
+            r"^VID_\d{8}_.*\.mp4$",  # Matches VID_YYYYMMDD_*.mp4
+            r"^PANO_\d{8}_.*\.jpg$",  # Matches PANO_YYYYMMDD_*.jpg
+        ]
+
+        matching_files = []
+
+        # Iterate over all files in the selected folder
+        for filename in os.listdir(folder_path):
+            # Check if the filename matches any of the patterns
+            if any(re.match(pattern, filename) for pattern in patterns):
+                matching_files.append(filename)
+
+        logging.info(f"Found {len(matching_files)} matching files")
+
+        return matching_files
 
     def move_files(
         self, grouped_files: Dict[str, List[str]], root_folder: Path
