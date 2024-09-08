@@ -20,8 +20,6 @@ class MainWindow(tk.Tk):
 
         # initialize variables
         self.grouping_var = tk.IntVar(value=1)  # Default to GroupingLevel.YYYY
-        self.grouping_text = tk.StringVar(value=self.get_grouping_text())
-        self.grouping_var.trace("w", self.update_label)
 
         # initialize widgets
         self.folder_label = tk.Label(self, text="Brak wybranego folderu")
@@ -37,8 +35,6 @@ class MainWindow(tk.Tk):
         radio_btn3 = tk.Radiobutton(
             self, text="Po roku, miesiącu i dniu", variable=self.grouping_var, value=3
         )
-        debug_radio_choice_label = tk.Label(self, text=self.grouping_var.get())
-        debug_radio_choice_label_text = tk.Label(self, textvariable=self.grouping_text)
         self.run_button = tk.Button(
             self,
             text="Uruchom!",
@@ -52,8 +48,6 @@ class MainWindow(tk.Tk):
         radio_btn1.grid(row=1, column=0)
         radio_btn2.grid(row=1, column=1)
         radio_btn3.grid(row=1, column=2)
-        debug_radio_choice_label.grid(row=2, column=0)
-        debug_radio_choice_label_text.grid(row=2, column=0)
         self.run_button.grid(row=3, column=0)
 
     def select_folder(self) -> None:
@@ -95,10 +89,6 @@ class MainWindow(tk.Tk):
             return GroupingLevel.YYYYMMDD
         raise ValueError(f"Niepoprawny wybór {value=}")
 
-    def update_label(self, *args):
-        # Update the label text based on the current value of grouping_var
-        self.grouping_text.set(self.get_grouping_text())
-
     def create_new_window_and_organize(self) -> None:
         if not OrganizePhotos.alive:
             second_window = OrganizePhotos(
@@ -110,7 +100,6 @@ class MainWindow(tk.Tk):
 class OrganizePhotos(tk.Toplevel):
     alive = False
     PROGRESS_BAR_LENGTH = 300
-    NUMBER_OF_STEPS = 3
 
     def __init__(
         self, folder_path: str, grouping_level: GroupingLevel, *args, **kwargs
@@ -144,9 +133,6 @@ class OrganizePhotos(tk.Toplevel):
 
         files = self.get_matching_files(folder_path)
         self.__update_label(f"{len(files)} plików może zostać przeniesionych.")
-        self.step_increment = self.__determine_progress_bar_step_increment(len(files))
-
-        self.progress_bar.step(self.step_increment * self.NUMBER_OF_STEPS)  # dirty, but better than artificial loop
 
         grouped_files = self.group_files_by_date(files, grouping_level)
         self.__update_label(
@@ -176,6 +162,9 @@ class OrganizePhotos(tk.Toplevel):
             # Check if the filename matches any of the patterns
             if any(re.match(pattern, filename) for pattern in patterns):
                 matching_files.append(filename)
+
+        self.step_increment = self.__determine_progress_bar_step_increment(len(matching_files))
+        self.progress_bar.step(self.step_increment)
 
         logging.info(f"Found {len(matching_files)} matching files")
 
@@ -217,6 +206,7 @@ class OrganizePhotos(tk.Toplevel):
                     failures += 1
                     logging.warning(f"Failed to move {file_path}: {e}")
 
+        self.progress_bar.step(self.step_increment)
         return successes, failures
 
     def group_files_by_date(
@@ -233,13 +223,12 @@ class OrganizePhotos(tk.Toplevel):
         - A dictionary where the keys are the date groups and the values are lists of filenames in each group.
         """
         grouped_files = defaultdict(list)
-
         for filename in file_list:
             date_part = self.__extract_date_part(filename, grouping)
             if date_part:
                 grouped_files[date_part].append(filename)
-            self.progress_bar.step(self.step_increment)
 
+        self.progress_bar.step(self.step_increment)
         logging.info(
             f"Number of groups: {len(grouped_files)}\nGroups themselves: {grouped_files.keys()}"
         )
@@ -282,7 +271,7 @@ class OrganizePhotos(tk.Toplevel):
 
     def __determine_progress_bar_step_increment(self, files_count: int):
         if files_count:
-            return (self.PROGRESS_BAR_LENGTH - 0.1) / self.NUMBER_OF_STEPS / files_count
+            return 33.3
         return self.step_increment
 
     def __update_label(self, desired_text: str) -> None:
