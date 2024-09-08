@@ -37,7 +37,10 @@ class MainWindow(tk.Tk):
         debug_radio_choice_label = tk.Label(self, text=self.grouping_var.get())
         debug_radio_choice_label_text = tk.Label(self, textvariable=self.grouping_text)
         self.run_button = tk.Button(
-            self, text="Uruchom!", command=self.create_new_window_and_organize, state="disabled"
+            self,
+            text="Uruchom!",
+            command=self.create_new_window_and_organize,
+            state="disabled",
         )
 
         # placement on the grid
@@ -67,7 +70,6 @@ class MainWindow(tk.Tk):
         """
         self.run_button["state"] = desired_state
 
-
     def get_grouping_text(self):
         # Map the IntVar values to their corresponding text
         value = self.grouping_var.get()
@@ -96,14 +98,20 @@ class MainWindow(tk.Tk):
 
     def create_new_window_and_organize(self) -> None:
         if not OrganizePhotos.alive:
-            second_window = OrganizePhotos(self.folder_label["text"], self.get_grouping_level())
+            second_window = OrganizePhotos(
+                self.folder_label["text"], self.get_grouping_level()
+            )
             second_window.organize()
 
 
 class OrganizePhotos(tk.Toplevel):
     alive = False
+    PROGRESS_BAR_LENGTH = 300
+    NUMBER_OF_STEPS = 3
 
-    def __init__(self, folder_path: str, grouping_level: GroupingLevel, *args, **kwargs):
+    def __init__(
+        self, folder_path: str, grouping_level: GroupingLevel, *args, **kwargs
+    ):
         super().__init__(*args, **kwargs)
         self.config(width=300, height=200)
         self.title("Przenoszenie plików do podfolderów")
@@ -113,7 +121,9 @@ class OrganizePhotos(tk.Toplevel):
         self.folder_path = folder_path
         self.grouping_level = grouping_level
 
-        self.progress_bar = ttk.Progressbar(self, orient="horizontal", mode="indeterminate", length=300)
+        self.progress_bar = ttk.Progressbar(
+            self, orient=tk.HORIZONTAL, length=self.PROGRESS_BAR_LENGTH
+        )
         self.progress_bar_label = tk.Label(self, text="Rozpoczynam.")
 
         self.progress_bar.pack(pady=20)
@@ -132,9 +142,12 @@ class OrganizePhotos(tk.Toplevel):
         self.progress_bar.step(33)
         self.__update_label(f"{len(files)} plików może zostać przeniesionych.")
 
+        step_increment = self.__determine_progress_bar_step_increment(len(files))
+
         grouped_files = group_files_by_date(files, grouping_level)
-        self.progress_bar.step(33)
-        self.__update_label(f"Liczba nowych folderów: {len(grouped_files)}\nI ich nazwy: {grouped_files.keys()}")
+        self.__update_label(
+            f"Liczba nowych folderów: {len(grouped_files)}\nI ich nazwy: {grouped_files.keys()}"
+        )
 
         successes, failures = move_files(grouped_files, Path(folder_path))
         self.progress_bar.step(33)
@@ -149,6 +162,9 @@ class OrganizePhotos(tk.Toplevel):
             messagebox.showinfo(title, msg)
         else:
             messagebox.showwarning(title, msg)
+
+    def __determine_progress_bar_step_increment(self, files_count: int):
+        return self.PROGRESS_BAR_LENGTH / self.NUMBER_OF_STEPS / files_count
 
     def __update_label(self, desired_text: str) -> None:
         self.progress_bar_label["text"] += f"\n\n{desired_text}"
