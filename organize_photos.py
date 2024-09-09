@@ -4,12 +4,20 @@ import re
 import shutil
 import tkinter as tk
 from collections import defaultdict
+from enum import Enum
 from pathlib import Path
 from tkinter import messagebox, ttk
 from typing import Dict, List, Tuple
+from unittest.mock import MagicMock
 
 from grouping_level import GroupingLevel
 from select_folder import select_folder
+
+
+class ButtonState(Enum):
+    active = "active"
+    normal = "normal"
+    disabled = "disabled"
 
 
 class MainWindow(tk.Tk):
@@ -55,17 +63,16 @@ class MainWindow(tk.Tk):
         if not folder_path:
             self.folder_label["text"] = "Brak wybranego folderu"
             self.folder_btn["text"] = "Wybierz folder!"
-            self.__change_button_state("disabled")
+            self.__change_button_state(self.run_button, ButtonState.disabled)
             return
         self.folder_label["text"] = folder_path
         self.folder_btn["text"] = "Wybrany folder:"
-        self.__change_button_state("normal")
+        self.__change_button_state(self.run_button, ButtonState.normal)
 
-    def __change_button_state(self, desired_state: str) -> None:
-        """
-        :param desired_state: active, normal, disabled
-        """
-        self.run_button["state"] = desired_state
+    def __change_button_state(
+        self, button: tk.Button, desired_state: ButtonState
+    ) -> None:
+        button["state"] = desired_state.value
 
     def get_grouping_text(self):
         # Map the IntVar values to their corresponding text
@@ -90,42 +97,43 @@ class MainWindow(tk.Tk):
         raise ValueError(f"Niepoprawny wybór {value=}")
 
     def create_new_window_and_organize(self) -> None:
-        if not OrganizePhotos.alive:
-            second_window = OrganizePhotos(
-                self.folder_label["text"], self.get_grouping_level()
-            )
-            second_window.organize()
+        self.__change_button_state(self.run_button, ButtonState.disabled)
+        self.__change_button_state(self.folder_btn, ButtonState.disabled)
+
+        # progress_bar_label = tk.Label(self, text="Rozpoczynam.")
+        files_length = len(os.listdir(self.folder_label["text"]))
+        # progress_bar = ttk.Progressbar(orient=tk.HORIZONTAL, length=files_length * 3 + 1)
+        # progress_bar_label.pack()
+        # progress_bar.pack()
+
+        command = OrganizePhotos(
+            self.folder_label["text"],
+            self.get_grouping_level(),
+            files_length * 3,
+            progress_bar=MagicMock(),
+            progress_bar_label=MagicMock(),
+        )
+        command.organize()
+
+        self.__change_button_state(self.run_button, ButtonState.normal)
+        self.__change_button_state(self.folder_btn, ButtonState.normal)
 
 
-class OrganizePhotos(tk.Toplevel):
-    alive = False
-    PROGRESS_BAR_LENGTH = 300
+class OrganizePhotos:
 
     def __init__(
-        self, folder_path: str, grouping_level: GroupingLevel, *args, **kwargs
+        self,
+        folder_path: str,
+        grouping_level: GroupingLevel,
+        number_of_steps: int = 1,
+        progress_bar: ttk.Progressbar = MagicMock(),
+        progress_bar_label: tk.Label = MagicMock(),
     ):
-        super().__init__(*args, **kwargs)
-        self.config(width=300, height=200)
-        self.title("Przenoszenie plików do podfolderów")
-        self.focus()
-        self.__class__.alive = True
-
         self.folder_path = folder_path
         self.grouping_level = grouping_level
-
-        self.progress_bar = ttk.Progressbar(
-            self, orient=tk.HORIZONTAL, length=self.PROGRESS_BAR_LENGTH
-        )
-        self.progress_bar_label = tk.Label(self, text="Rozpoczynam.")
-        self.step_increment = self.PROGRESS_BAR_LENGTH - 0.1
-
-        self.progress_bar.pack(pady=20)
-        self.progress_bar_label.pack(pady=10)
-
-    def destroy(self):
-        # Restore the attribute on close.
-        self.__class__.alive = False
-        return super().destroy()
+        self.step_increment = 1 / number_of_steps
+        self.progress_bar = progress_bar
+        self.progress_bar_label = progress_bar_label
 
     def organize(self) -> None:
         folder_path = self.folder_path
@@ -133,7 +141,6 @@ class OrganizePhotos(tk.Toplevel):
 
         files = self.get_matching_files(folder_path)
         self.__update_label(f"{len(files)} plików może zostać przeniesionych.")
-
         grouped_files = self.group_files_by_date(files, grouping_level)
         self.__update_label(
             f"Liczba nowych folderów: {len(grouped_files)}\nI ich nazwy: {grouped_files.keys()}"
@@ -163,7 +170,9 @@ class OrganizePhotos(tk.Toplevel):
             if any(re.match(pattern, filename) for pattern in patterns):
                 matching_files.append(filename)
 
-        self.step_increment = self.__determine_progress_bar_step_increment(len(matching_files))
+        self.step_increment = self.__determine_progress_bar_step_increment(
+            len(matching_files)
+        )
         self.progress_bar.step(self.step_increment)
 
         logging.info(f"Found {len(matching_files)} matching files")
