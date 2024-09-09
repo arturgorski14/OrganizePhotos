@@ -38,7 +38,9 @@ class MainWindow(tk.Tk):
         dropdown_label = tk.Label(self, text="Wybierz sposób grupowania")
         self.grouping_variable = tk.StringVar(self)
         self.grouping_variable.set(GroupingLevel.YYYY.value)
-        dropdown = tk.OptionMenu(self, self.grouping_variable, *[option.value for option in GroupingLevel])
+        dropdown = tk.OptionMenu(
+            self, self.grouping_variable, *[option.value for option in GroupingLevel]
+        )
         self.run_button = tk.Button(
             self,
             text="Uruchom!",
@@ -66,21 +68,6 @@ class MainWindow(tk.Tk):
         self.folder_btn["text"] = "Wybrany folder:"
         self.__change_button_state(self.run_button, ButtonState.normal)
 
-    def __convert_grouping_value_back_to_enum(self) -> GroupingLevel:
-        grouping_level = self.grouping_variable.get()
-        if grouping_level == GroupingLevel.YYYY.value:
-            return GroupingLevel.YYYY
-        elif grouping_level == GroupingLevel.YYYYMM.value:
-            return GroupingLevel.YYYYMM
-        elif grouping_level == GroupingLevel.YYYYMMDD.value:
-            return GroupingLevel.YYYYMMDD
-        raise ValueError(f"{grouping_level} is not a member of {GroupingLevel}.")
-
-    def __change_button_state(
-        self, button: tk.Button, desired_state: ButtonState
-    ) -> None:
-        button["state"] = desired_state.value
-
     def create_new_window_and_organize(self) -> None:
         self.__change_button_state(self.run_button, ButtonState.disabled)
         self.__change_button_state(self.folder_btn, ButtonState.disabled)
@@ -102,6 +89,21 @@ class MainWindow(tk.Tk):
 
         self.__change_button_state(self.run_button, ButtonState.normal)
         self.__change_button_state(self.folder_btn, ButtonState.normal)
+
+    def __convert_grouping_value_back_to_enum(self) -> GroupingLevel:
+        grouping_level = self.grouping_variable.get()
+        if grouping_level == GroupingLevel.YYYY.value:
+            return GroupingLevel.YYYY
+        elif grouping_level == GroupingLevel.YYYYMM.value:
+            return GroupingLevel.YYYYMM
+        elif grouping_level == GroupingLevel.YYYYMMDD.value:
+            return GroupingLevel.YYYYMMDD
+        raise ValueError(f"{grouping_level} is not a member of {GroupingLevel}.")
+
+    def __change_button_state(
+        self, button: tk.Button, desired_state: ButtonState
+    ) -> None:
+        button["state"] = desired_state.value
 
 
 class OrganizePhotos:
