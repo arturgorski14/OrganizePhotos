@@ -2,6 +2,6 @@ from enum import Enum
 
 
 class GroupingLevel(Enum):
-    YYYY = 1
-    YYYYMM = 2
-    YYYYMMDD = 3
+    YYYY = "Po roku"
+    YYYYMM = "Po roku i miesiącu"
+    YYYYMMDD = "Po roku, miesiącu i dniu"

@@ -34,15 +34,11 @@ class MainWindow(tk.Tk):
         self.folder_btn = tk.Button(
             self, text="Wybierz folder!", command=self.select_folder
         )
-        radio_btn1 = tk.Radiobutton(
-            self, text="Po roku", variable=self.grouping_var, value=1
-        )
-        radio_btn2 = tk.Radiobutton(
-            self, text="Po roku i miesiącu", variable=self.grouping_var, value=2
-        )
-        radio_btn3 = tk.Radiobutton(
-            self, text="Po roku, miesiącu i dniu", variable=self.grouping_var, value=3
-        )
+
+        dropdown_label = tk.Label(self, text="Wybierz sposób grupowania")
+        self.grouping_variable = tk.StringVar(self)
+        self.grouping_variable.set(GroupingLevel.YYYY.value)
+        dropdown = tk.OptionMenu(self, self.grouping_variable, *[option.value for option in GroupingLevel])
         self.run_button = tk.Button(
             self,
             text="Uruchom!",
@@ -53,9 +49,10 @@ class MainWindow(tk.Tk):
         # placement on the grid
         self.folder_label.pack()
         self.folder_btn.pack()
-        radio_btn1.pack()
-        radio_btn2.pack()
-        radio_btn3.pack()
+
+        dropdown_label.pack()
+        dropdown.pack()
+
         self.run_button.pack()
 
     def select_folder(self) -> None:
@@ -69,32 +66,20 @@ class MainWindow(tk.Tk):
         self.folder_btn["text"] = "Wybrany folder:"
         self.__change_button_state(self.run_button, ButtonState.normal)
 
+    def __convert_grouping_value_back_to_enum(self) -> GroupingLevel:
+        grouping_level = self.grouping_variable.get()
+        if grouping_level == GroupingLevel.YYYY.value:
+            return GroupingLevel.YYYY
+        elif grouping_level == GroupingLevel.YYYYMM.value:
+            return GroupingLevel.YYYYMM
+        elif grouping_level == GroupingLevel.YYYYMMDD.value:
+            return GroupingLevel.YYYYMMDD
+        raise ValueError(f"{grouping_level} is not a member of {GroupingLevel}.")
+
     def __change_button_state(
         self, button: tk.Button, desired_state: ButtonState
     ) -> None:
         button["state"] = desired_state.value
-
-    def get_grouping_text(self):
-        # Map the IntVar values to their corresponding text
-        value = self.grouping_var.get()
-        if value == 1:
-            return "Po roku"
-        elif value == 2:
-            return "Po roku i miesiącu"
-        elif value == 3:
-            return "Po roku, miesiącu i dniu"
-        else:
-            return "Nieznany poziom"
-
-    def get_grouping_level(self) -> GroupingLevel:
-        value = self.grouping_var.get()
-        if value == 1:
-            return GroupingLevel.YYYY
-        elif value == 2:
-            return GroupingLevel.YYYYMM
-        elif value == 3:
-            return GroupingLevel.YYYYMMDD
-        raise ValueError(f"Niepoprawny wybór {value=}")
 
     def create_new_window_and_organize(self) -> None:
         self.__change_button_state(self.run_button, ButtonState.disabled)
@@ -108,7 +93,7 @@ class MainWindow(tk.Tk):
 
         command = OrganizePhotos(
             self.folder_label["text"],
-            self.get_grouping_level(),
+            self.__convert_grouping_value_back_to_enum(),
             files_length * 3,
             progress_bar=MagicMock(),
             progress_bar_label=MagicMock(),
