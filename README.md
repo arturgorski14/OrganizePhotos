@@ -10,3 +10,4 @@ Deploy:
 ```console
 pyinstaller main.py
 ```
+- program is going to be inside *dist* folder
