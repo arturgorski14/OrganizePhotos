@@ -26,19 +26,20 @@ class MainWindow(tk.Tk):
         self.title("Organizer zdjęć")
         self.geometry("300x300")
 
-        # initialize variables
-        self.grouping_var = tk.IntVar(value=1)  # Default to GroupingLevel.YYYY
-
-        # initialize widgets
         self.folder_label = tk.Label(self, text="Brak wybranego folderu")
         self.folder_btn = tk.Button(
             self, text="Wybierz folder!", command=self.select_folder
         )
 
-        dropdown_label = tk.Label(self, text="Wybierz sposób grupowania")
+        self.grouping_section = tk.Button(self, text="Grupowanie", state="active", command=self.show_grouping_widgets)
+        self.flattening_section = tk.Button(self, text="Spłaszczanie", state="normal", command=self.show_flattening_widgets)
+
+        self.flattening_label = tk.Label(self, text="W trakcie implementacji ;)")
+
+        self.dropdown_label = tk.Label(self, text="Wybierz sposób grupowania")
         self.grouping_variable = tk.StringVar(self)
         self.grouping_variable.set(GroupingLevel.YYYY.value)
-        dropdown = tk.OptionMenu(
+        self.dropdown = tk.OptionMenu(
             self, self.grouping_variable, *[option.value for option in GroupingLevel]
         )
         self.run_button = tk.Button(
@@ -52,10 +53,20 @@ class MainWindow(tk.Tk):
         self.folder_label.pack()
         self.folder_btn.pack()
 
-        dropdown_label.pack()
-        dropdown.pack()
+        self.grouping_section.pack()
+        self.flattening_section.pack()
 
+    def show_grouping_widgets(self):
+        self.dropdown_label.pack()
+        self.dropdown.pack()
         self.run_button.pack()
+        self.flattening_label.pack_forget()
+
+    def show_flattening_widgets(self):
+        self.dropdown_label.pack_forget()
+        self.dropdown.pack_forget()
+        self.run_button.pack_forget()
+        self.flattening_label.pack()
 
     def select_folder(self) -> None:
         folder_path = select_folder()
