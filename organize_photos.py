@@ -24,37 +24,58 @@ class MainWindow(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Organizer zdjęć")
-        self.geometry("300x300")
+        self.geometry("400x300")
 
-        self.folder_label = tk.Label(self, text="Brak wybranego folderu")
-        self.folder_btn = tk.Button(
-            self, text="Wybierz folder!", command=self.select_folder
+        top_frame = tk.Frame(self, padx=10, pady=10, bd=2, relief="groove")
+        top_frame.pack(side="top", fill="x")  # Pack at the top and fill the width
+        self.grouping_section = tk.Button(
+            top_frame,
+            text="Grupowanie",
+            state="active",
+            command=self.show_grouping_widgets,
         )
+        self.flattening_section = tk.Button(
+            top_frame,
+            text="Spłaszczanie",
+            state="normal",
+            command=self.show_flattening_widgets,
+        )
+        self.grouping_section.pack(side="left", expand=True, fill="both")
+        self.flattening_section.pack(side="left", expand=True, fill="both")
 
-        self.grouping_section = tk.Button(self, text="Grupowanie", state="active", command=self.show_grouping_widgets)
-        self.flattening_section = tk.Button(self, text="Spłaszczanie", state="normal", command=self.show_flattening_widgets)
+        bottom_frame = tk.Frame(self, padx=10, pady=10, bd=2, relief="groove")
+        bottom_frame.pack(
+            side="bottom", fill="both", expand=True
+        )  # Pack at the bottom and fill the remaining space
 
-        self.flattening_label = tk.Label(self, text="W trakcie implementacji ;)")
+        folder_frame = tk.Frame(bottom_frame, padx=10, pady=10, bd=2, relief="groove")
+        folder_frame.pack(side="top", fill="x", expand=True)
+        self.folder_label = tk.Label(folder_frame, text="Brak wybranego folderu")
+        self.folder_btn = tk.Button(
+            folder_frame, text="Wybierz folder!", command=self.select_folder
+        )
+        self.folder_btn.pack()
+        self.folder_label.pack()
 
-        self.dropdown_label = tk.Label(self, text="Wybierz sposób grupowania")
-        self.grouping_variable = tk.StringVar(self)
+        concrete_frame = tk.Frame(bottom_frame, padx=10, pady=10, bd=2, relief="groove")
+        concrete_frame.pack(side="top", fill="both", expand=True)
+        self.flattening_label = tk.Label(
+            concrete_frame, text="W trakcie implementacji ;)"
+        )
+        self.dropdown_label = tk.Label(concrete_frame, text="Wybierz sposób grupowania")
+        self.grouping_variable = tk.StringVar(concrete_frame)
         self.grouping_variable.set(GroupingLevel.YYYY.value)
         self.dropdown = tk.OptionMenu(
-            self, self.grouping_variable, *[option.value for option in GroupingLevel]
+            concrete_frame,
+            self.grouping_variable,
+            *[option.value for option in GroupingLevel],
         )
         self.run_button = tk.Button(
-            self,
+            concrete_frame,
             text="Uruchom!",
             command=self.create_new_window_and_organize,
             state="disabled",
         )
-
-        # placement on the grid
-        self.folder_label.pack()
-        self.folder_btn.pack()
-
-        self.grouping_section.pack()
-        self.flattening_section.pack()
 
     def show_grouping_widgets(self):
         self.dropdown_label.pack()
