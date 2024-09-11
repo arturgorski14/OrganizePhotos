@@ -68,7 +68,9 @@ class MainWindow(tk.Tk):
         concrete_frame.pack(side="top", fill="both", expand=True)
         self.flattening_label = tk.Label(
             concrete_frame,
-            text="Przenosi wszystkie pliki do wybranego folderu\ni usuwa puste foldery.",
+            text="Przenosi wszystkie pliki do wybranego folderu\n"
+                 "Pomija pliki o tych samych nazwach\n"
+                 "Usuwa puste foldery.",
         )
         self.dropdown_label = tk.Label(concrete_frame, text="Wybierz sposób grupowania")
         self.grouping_variable = tk.StringVar(concrete_frame)
