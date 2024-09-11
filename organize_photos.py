@@ -117,7 +117,7 @@ class MainWindow(tk.Tk):
             progress_bar=MagicMock(),
             progress_bar_label=MagicMock(),
         )
-        command.organize()
+        command.group()
 
         self.__change_button_state(self.run_button, ButtonState.normal)
         self.__change_button_state(self.folder_btn, ButtonState.normal)
@@ -154,7 +154,7 @@ class OrganizePhotos:
         self.progress_bar = progress_bar
         self.progress_bar_label = progress_bar_label
 
-    def organize(self) -> None:
+    def group(self) -> None:
         folder_path = self.folder_path
         grouping_level = self.grouping_level
 
