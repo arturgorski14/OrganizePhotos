@@ -67,7 +67,8 @@ class MainWindow(tk.Tk):
         concrete_frame = tk.Frame(bottom_frame, padx=10, pady=10, bd=2, relief="groove")
         concrete_frame.pack(side="top", fill="both", expand=True)
         self.flattening_label = tk.Label(
-            concrete_frame, text="W trakcie implementacji ;)"
+            concrete_frame,
+            text="Przenosi wszystkie pliki do wybranego folderu\ni usuwa puste foldery.",
         )
         self.dropdown_label = tk.Label(concrete_frame, text="Wybierz sposób grupowania")
         self.grouping_variable = tk.StringVar(concrete_frame)
@@ -149,7 +150,10 @@ class MainWindow(tk.Tk):
         self.__change_button_state(self.run_button, ButtonState.disabled)
         self.__change_button_state(self.folder_btn, ButtonState.disabled)
 
-        move_files_to_main_folder(self.folder_label["text"])
+        moved, skipped, failures, total = move_files_to_main_folder(
+            self.folder_label["text"]
+        )
+        self.__display_message_box(moved, skipped, failures, total)
 
         self.__change_button_state(self.run_button, ButtonState.normal)
         self.__change_button_state(self.folder_btn, ButtonState.normal)
@@ -168,6 +172,20 @@ class MainWindow(tk.Tk):
         self, button: tk.Button, desired_state: ButtonState
     ) -> None:
         button["state"] = desired_state.value
+
+    def __display_message_box(
+        self, successes: int = 0, skipped: int = 0, failures: int = 0, total: int = 0
+    ) -> None:
+        title = "Przetwarzanie zakończone"
+        msg = f"Przeniesiono {successes} z {total} plików."
+        if skipped:
+            msg += f"\nPominięto {skipped} plików."
+        if failures:
+            msg += f"\nBłędów przy przenoszeniu {failures} plików."
+        if not failures:
+            messagebox.showinfo(title, msg)
+        else:
+            messagebox.showwarning(title, msg)
 
 
 class OrganizePhotos:
