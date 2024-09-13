@@ -69,8 +69,8 @@ class MainWindow(tk.Tk):
         self.flattening_label = tk.Label(
             concrete_frame,
             text="Przenosi wszystkie pliki do wybranego folderu\n"
-                 "Pomija pliki o tych samych nazwach\n"
-                 "Usuwa puste foldery.",
+            "Pomija pliki o tych samych nazwach\n"
+            "Usuwa puste foldery.",
         )
         self.dropdown_label = tk.Label(concrete_frame, text="Wybierz sposób grupowania")
         self.grouping_variable = tk.StringVar(concrete_frame)
@@ -130,11 +130,7 @@ class MainWindow(tk.Tk):
         self.__change_button_state(self.run_button, ButtonState.disabled)
         self.__change_button_state(self.folder_btn, ButtonState.disabled)
 
-        # progress_bar_label = tk.Label(self, text="Rozpoczynam.")
         files_length = len(os.listdir(self.folder_label["text"]))
-        # progress_bar = ttk.Progressbar(orient=tk.HORIZONTAL, length=files_length * 3 + 1)
-        # progress_bar_label.pack()
-        # progress_bar.pack()
 
         command = OrganizePhotos(
             self.folder_label["text"],
