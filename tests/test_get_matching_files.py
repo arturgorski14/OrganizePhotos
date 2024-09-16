@@ -12,10 +12,6 @@ class TestGetMatchingFiles:
     def setup_app(self, tmp_path):
         # Create an instance of OrganizePhotos with dummy folder_path and grouping level
         app = OrganizePhotos(str(tmp_path), grouping_level=GroupingLevel.YYYY)
-
-        # Mock GUI components
-        app.progress_bar = MagicMock()
-        app.progress_bar_label = MagicMock()
         return app
 
     def test_get_matching_files_with_matches(self, tmpdir, setup_app, caplog):
