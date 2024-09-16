@@ -6,9 +6,8 @@ import tkinter as tk
 from collections import defaultdict
 from enum import Enum
 from pathlib import Path
-from tkinter import messagebox, ttk
+from tkinter import messagebox
 from typing import Dict, List, Tuple
-from unittest.mock import MagicMock
 
 from constants import (ACTIVE_BUTTON_COLOR, DEFAULT_BUTTON_COLOR,
                        USER_ACTION_NEEDED_COLOR)
@@ -130,12 +129,9 @@ class MainWindow(tk.Tk):
         self.__change_button_state(self.run_button, ButtonState.disabled)
         self.__change_button_state(self.folder_btn, ButtonState.disabled)
 
-        files_length = len(os.listdir(self.folder_label["text"]))
-
         command = OrganizePhotos(
             self.folder_label["text"],
             self.__convert_grouping_value_back_to_enum(),
-            files_length * 3,
         )
         command.group()
 
@@ -190,13 +186,9 @@ class OrganizePhotos:
         self,
         folder_path: str,
         grouping_level: GroupingLevel,
-        number_of_steps: int = 1,
-        progress_bar: ttk.Progressbar = MagicMock(),
-        progress_bar_label: tk.Label = MagicMock(),
     ):
         self.folder_path = folder_path
         self.grouping_level = grouping_level
-        self.step_increment = 1 / number_of_steps
 
     def group(self) -> None:
         folder_path = self.folder_path
@@ -327,6 +319,7 @@ class OrganizePhotos:
             messagebox.showinfo(title, msg)
         else:
             messagebox.showwarning(title, msg)
+
 
 def organize_photos() -> None:
     logging.basicConfig(level=logging.INFO)
