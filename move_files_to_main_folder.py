@@ -1,11 +1,12 @@
 import logging
 import os
 import shutil
+from pathlib import Path
 from typing import Tuple
 
 
 def move_files_to_main_folder(
-    source_folder: str, resolution: str = "skip"
+    source_folder: str | Path, resolution: str = "skip"
 ) -> Tuple[int, int, int, int]:
     """
     Przenosi wszystkie pliki z podfolderów do folderu głównego.

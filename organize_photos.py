@@ -6,9 +6,8 @@ import tkinter as tk
 from collections import defaultdict
 from enum import Enum
 from pathlib import Path
-from tkinter import messagebox, ttk
+from tkinter import messagebox
 from typing import Dict, List, Tuple
-from unittest.mock import MagicMock
 
 from constants import (ACTIVE_BUTTON_COLOR, DEFAULT_BUTTON_COLOR,
                        USER_ACTION_NEEDED_COLOR)
@@ -69,8 +68,8 @@ class MainWindow(tk.Tk):
         self.flattening_label = tk.Label(
             concrete_frame,
             text="Przenosi wszystkie pliki do wybranego folderu\n"
-                 "Pomija pliki o tych samych nazwach\n"
-                 "Usuwa puste foldery.",
+            "Pomija pliki o tych samych nazwach\n"
+            "Usuwa puste foldery.",
         )
         self.dropdown_label = tk.Label(concrete_frame, text="Wybierz sposób grupowania")
         self.grouping_variable = tk.StringVar(concrete_frame)
@@ -130,18 +129,9 @@ class MainWindow(tk.Tk):
         self.__change_button_state(self.run_button, ButtonState.disabled)
         self.__change_button_state(self.folder_btn, ButtonState.disabled)
 
-        # progress_bar_label = tk.Label(self, text="Rozpoczynam.")
-        files_length = len(os.listdir(self.folder_label["text"]))
-        # progress_bar = ttk.Progressbar(orient=tk.HORIZONTAL, length=files_length * 3 + 1)
-        # progress_bar_label.pack()
-        # progress_bar.pack()
-
         command = OrganizePhotos(
             self.folder_label["text"],
             self.__convert_grouping_value_back_to_enum(),
-            files_length * 3,
-            progress_bar=MagicMock(),
-            progress_bar_label=MagicMock(),
         )
         command.group()
 
@@ -196,29 +186,17 @@ class OrganizePhotos:
         self,
         folder_path: str,
         grouping_level: GroupingLevel,
-        number_of_steps: int = 1,
-        progress_bar: ttk.Progressbar = MagicMock(),
-        progress_bar_label: tk.Label = MagicMock(),
     ):
         self.folder_path = folder_path
         self.grouping_level = grouping_level
-        self.step_increment = 1 / number_of_steps
-        self.progress_bar = progress_bar
-        self.progress_bar_label = progress_bar_label
 
     def group(self) -> None:
         folder_path = self.folder_path
         grouping_level = self.grouping_level
 
         files = self.get_matching_files(folder_path)
-        self.__update_label(f"{len(files)} plików może zostać przeniesionych.")
         grouped_files = self.group_files_by_date(files, grouping_level)
-        self.__update_label(
-            f"Liczba nowych folderów: {len(grouped_files)}\nI ich nazwy: {grouped_files.keys()}"
-        )
-
         successes, failures = self.move_files(grouped_files, Path(folder_path))
-        self.__update_label(f"Przeniesiono {successes} z {successes + failures} plików")
 
         self.__display_message_box(successes, failures)
 
@@ -240,11 +218,6 @@ class OrganizePhotos:
             # Check if the filename matches any of the patterns
             if any(re.match(pattern, filename) for pattern in patterns):
                 matching_files.append(filename)
-
-        self.step_increment = self.__determine_progress_bar_step_increment(
-            len(matching_files)
-        )
-        self.progress_bar.step(self.step_increment)
 
         logging.info(f"Found {len(matching_files)} matching files")
 
@@ -286,7 +259,6 @@ class OrganizePhotos:
                     failures += 1
                     logging.warning(f"Failed to move {file_path}: {e}")
 
-        self.progress_bar.step(self.step_increment)
         return successes, failures
 
     def group_files_by_date(
@@ -308,7 +280,6 @@ class OrganizePhotos:
             if date_part:
                 grouped_files[date_part].append(filename)
 
-        self.progress_bar.step(self.step_increment)
         logging.info(
             f"Number of groups: {len(grouped_files)}\nGroups themselves: {grouped_files.keys()}"
         )
@@ -348,14 +319,6 @@ class OrganizePhotos:
             messagebox.showinfo(title, msg)
         else:
             messagebox.showwarning(title, msg)
-
-    def __determine_progress_bar_step_increment(self, files_count: int):
-        if files_count:
-            return 33.3
-        return self.step_increment
-
-    def __update_label(self, desired_text: str) -> None:
-        self.progress_bar_label["text"] += f"\n\n{desired_text}"
 
 
 def organize_photos() -> None:
