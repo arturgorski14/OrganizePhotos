@@ -54,11 +54,15 @@ class TestGroupFilesByDate:
                     "VID_20240902_something.mp4",
                     "IMG_20241001_something.jpg",
                     "PANO_20241001_something.jpg",
+                    "20240721_161757.jpg",  # SAMSUNG
+                    "20240925_211300.mp4",
                 ],
                 GroupingLevel.YYYYMMDD,
                 {
                     "2023.09.01": ["IMG_20230901_something.jpg"],
+                    "2024.07.21": ["20240721_161757.jpg"],
                     "2024.09.02": ["VID_20240902_something.mp4"],
+                    "2024.09.25": ["20240925_211300.mp4"],
                     "2024.10.01": [
                         "IMG_20241001_something.jpg",
                         "PANO_20241001_something.jpg",
