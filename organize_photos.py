@@ -207,19 +207,22 @@ class OrganizePhotos:
         # Regular expression patterns for the file formats
         patterns = [
             r"^IMG_\d{8}_.*\.jpg$",  # Matches IMG_YYYYMMDD_*.jpg
+            r"^\d{8}_.*\.jpg$",  # Matches YYYYMMDD_*.jpg
             r"^VID_\d{8}_.*\.mp4$",  # Matches VID_YYYYMMDD_*.mp4
+            r"^\d{8}_.*\.mp4$",  # Matches YYYYMMDD_*.mp4
             r"^PANO_\d{8}_.*\.jpg$",  # Matches PANO_YYYYMMDD_*.jpg
-        ]
+        ]  # TODO: refactor -> dict. First check file extension. Then check patterns.
 
         matching_files = []
 
         # Iterate over all files in the selected folder
-        for filename in os.listdir(folder_path):
+        files = os.listdir(folder_path)
+        for filename in files:
             # Check if the filename matches any of the patterns
             if any(re.match(pattern, filename) for pattern in patterns):
                 matching_files.append(filename)
 
-        logging.info(f"Found {len(matching_files)} matching files")
+        logging.info(f"Found {len(matching_files)} matching files out of {len(files)}")
 
         return matching_files
 
@@ -276,16 +279,16 @@ class OrganizePhotos:
         """
         grouped_files = defaultdict(list)
         for filename in file_list:
-            date_part = self.__extract_date_part(filename, grouping)
-            if date_part:
-                grouped_files[date_part].append(filename)
+            folder_name = self.__create_folder_name(filename, grouping)
+            if folder_name:
+                grouped_files[folder_name].append(filename)
 
         logging.info(
             f"Number of groups: {len(grouped_files)}\nGroups themselves: {grouped_files.keys()}"
         )
         return dict(grouped_files)
 
-    def __extract_date_part(self, filename: str, grouping: GroupingLevel) -> str:
+    def __create_folder_name(self, filename: str, grouping: GroupingLevel) -> str:
         """
         Extracts the date part from the filename based on the grouping level.
 
@@ -296,10 +299,7 @@ class OrganizePhotos:
         Returns:
         - The extracted date part as a string.
         """
-        # Extract the date part from the filename
-        # Assuming filenames are in the format: PREFIX_YYYYMMDD_rest.ext
-        parts = filename.split("_")
-        date_part = parts[1]  # YYYYMMDD
+        date_part = self.__extract_date_part(filename)
 
         year = date_part[:4]
         month = date_part[4:6]
@@ -311,6 +311,11 @@ class OrganizePhotos:
             return f"{year}.{month}"
         elif grouping == GroupingLevel.YYYYMMDD:
             return f"{year}.{month}.{day}"
+
+    def __extract_date_part(self, filename: str) -> str:
+        first_digit_position = [x.isdigit() for x in filename].index(True)
+        cleaned_date: str = filename[first_digit_position:]
+        return cleaned_date[:8]
 
     def __display_message_box(self, successes: int = 20, failures: int = 5) -> None:
         title = "Przetwarzanie zakończone"

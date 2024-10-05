@@ -1,4 +1,5 @@
 import logging
+from typing import List
 
 import pytest
 
@@ -13,60 +14,66 @@ class TestGetMatchingFiles:
         app = OrganizePhotos(str(tmp_path), grouping_level=GroupingLevel.YYYY)
         return app
 
-    def test_get_matching_files_with_matches(self, tmpdir, setup_app, caplog):
-        # Create a temporary directory with some test files
+    @pytest.mark.parametrize(
+        "test_files, expected_matches",
+        [
+            (
+                [  # REDMI
+                    "IMG_20230901_something.jpg",
+                    "VID_20230902_anotherthing.mp4",
+                    "PANO_20230903_yetanotherthing.jpg",
+                ],
+                [
+                    "IMG_20230901_something.jpg",
+                    "VID_20230902_anotherthing.mp4",
+                    "PANO_20230903_yetanotherthing.jpg",
+                ],
+            ),
+            (
+                [  # SAMSUNG
+                    "20240721_161757.jpg",
+                    "20240925_211300.mp4",
+                ],
+                [
+                    "20240721_161757.jpg",
+                    "20240925_211300.mp4",
+                ],
+            ),
+            (
+                [
+                    "NOT_A_MATCH_20230903.txt",
+                    "unsupported_type_20230903.png",
+                    "random_file.jpg",
+                    "VID_20230902_impostor.txt",
+                    "IMG_20230901_impostor.png",
+                    "20240925_211300.png",
+                ],
+                [],
+            ),
+            ([], []),
+        ],
+    )
+    def test_get_matching_files_with_matches(
+        self, tmpdir, setup_app, caplog, test_files, expected_matches
+    ):
         app = setup_app
-        test_files = [
-            "IMG_20230901_something.jpg",
-            "VID_20230902_anotherthing.mp4",
-            "PANO_20230903_yetanotherthing.jpg",
-            "NOT_A_MATCH.txt",
-            "random_file.png",
-        ]
-
-        for filename in test_files:
-            tmpdir.join(filename).write("test content")
+        self.__populate_folder(tmpdir, test_files)
 
         with caplog.at_level(logging.INFO):
             matching_files = app.get_matching_files(str(tmpdir))
 
-        # Assert that only the matching files are returned
-        assert sorted(matching_files) == sorted(
-            [
-                "IMG_20230901_something.jpg",
-                "VID_20230902_anotherthing.mp4",
-                "PANO_20230903_yetanotherthing.jpg",
-            ]
+        assert sorted(matching_files) == sorted(expected_matches)
+        self.__assert_log_message(caplog, matching_files, test_files)
+
+    def __populate_folder(self, directory, filenames: List[str]) -> None:
+        for filename in filenames:
+            directory.join(filename).write("test content")
+
+    def __assert_log_message(
+        self, caplog, matched_files: List[str], all_files: List[str]
+    ) -> bool:
+        assert (
+            f"Found {len(matched_files)} matching files out of {len(all_files)}"
+            in caplog.text
         )
-
-        # Assert that the log contains the correct message
-        assert "Found 3 matching files" in caplog.text
-
-    def test_get_matching_files_without_matches(self, tmpdir, setup_app, caplog):
-        app = setup_app
-        # Create a temporary directory with files that don't match the pattern
-        test_files = ["VID_20230902_impostor.txt", "IMG_20230901_impostor.png"]
-
-        for filename in test_files:
-            tmpdir.join(filename).write("test content")
-
-        with caplog.at_level(logging.INFO):
-            matching_files = app.get_matching_files(str(tmpdir))
-
-        # Assert that the result is an empty list
-        assert matching_files == []
-
-        # Assert that the log contains the correct message
-        assert "Found 0 matching files" in caplog.text
-
-    def test_get_matching_files_empty_folder(self, tmpdir, setup_app, caplog):
-        app = setup_app
-        # Ensure the directory is empty
-        with caplog.at_level(logging.INFO):
-            matching_files = app.get_matching_files(str(tmpdir))
-
-        # Assert that the result is an empty list
-        assert matching_files == []
-
-        # Assert that the log contains the correct message
-        assert "Found 0 matching files" in caplog.text
+        return True
