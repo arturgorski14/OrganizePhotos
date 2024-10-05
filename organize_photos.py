@@ -9,8 +9,11 @@ from pathlib import Path
 from tkinter import messagebox
 from typing import Dict, List, Tuple
 
-from constants import (ACTIVE_BUTTON_COLOR, DEFAULT_BUTTON_COLOR,
-                       USER_ACTION_NEEDED_COLOR)
+from constants import (
+    ACTIVE_BUTTON_COLOR,
+    DEFAULT_BUTTON_COLOR,
+    USER_ACTION_NEEDED_COLOR,
+)
 from grouping_level import GroupingLevel
 from move_files_to_main_folder import move_files_to_main_folder
 from select_folder import select_folder
@@ -206,11 +209,11 @@ class OrganizePhotos:
 
         # Regular expression patterns for the file formats
         patterns = [
-            r"^IMG_\d{8}_.*\.jpg$",  # Matches IMG_YYYYMMDD_*.jpg
+            r"^IMG.\d{8}..*\.jpg$",  # Matches IMG<any>YYYYMMDD<any>*.jpg
             r"^\d{8}_.*\.jpg$",  # Matches YYYYMMDD_*.jpg
-            r"^VID_\d{8}_.*\.mp4$",  # Matches VID_YYYYMMDD_*.mp4
+            r"^VID.\d{8}..*\.mp4$",  # Matches VID<any>YYYYMMDD<any>*.mp4
             r"^\d{8}_.*\.mp4$",  # Matches YYYYMMDD_*.mp4
-            r"^PANO_\d{8}_.*\.jpg$",  # Matches PANO_YYYYMMDD_*.jpg
+            r"^PANO.\d{8}..*\.jpg$",  # Matches PANO<any>YYYYMMDD<any>*.jpg
         ]  # TODO: refactor -> dict. First check file extension. Then check patterns.
 
         matching_files = []

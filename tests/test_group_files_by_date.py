@@ -50,12 +50,17 @@ class TestGroupFilesByDate:
             ),
             (
                 [
+                    # REDMI
                     "IMG_20230901_something.jpg",
                     "VID_20240902_something.mp4",
                     "IMG_20241001_something.jpg",
                     "PANO_20241001_something.jpg",
-                    "20240721_161757.jpg",  # SAMSUNG
+                    # SAMSUNG
+                    "20240721_161757.jpg",
                     "20240925_211300.mp4",
+                    # Whatsapp
+                    "IMG-20241005-WA0001.jpg",
+                    "VID-20241005-WA0014.mp4",
                 ],
                 GroupingLevel.YYYYMMDD,
                 {
@@ -66,6 +71,10 @@ class TestGroupFilesByDate:
                     "2024.10.01": [
                         "IMG_20241001_something.jpg",
                         "PANO_20241001_something.jpg",
+                    ],
+                    "2024.10.05": [
+                        "IMG-20241005-WA0001.jpg",
+                        "VID-20241005-WA0014.mp4",
                     ],
                 },
             ),
