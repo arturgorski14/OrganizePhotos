@@ -56,7 +56,6 @@ class TestGetMatchingFiles:
     def test_get_matching_files_with_matches(
         self, tmpdir, setup_app, caplog, test_files, expected_matches
     ):
-        # Create a temporary directory with some test files
         app = setup_app
         self.__populate_folder(tmpdir, test_files)
 

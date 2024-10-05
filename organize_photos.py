@@ -9,11 +9,8 @@ from pathlib import Path
 from tkinter import messagebox
 from typing import Dict, List, Tuple
 
-from constants import (
-    ACTIVE_BUTTON_COLOR,
-    DEFAULT_BUTTON_COLOR,
-    USER_ACTION_NEEDED_COLOR,
-)
+from constants import (ACTIVE_BUTTON_COLOR, DEFAULT_BUTTON_COLOR,
+                       USER_ACTION_NEEDED_COLOR)
 from grouping_level import GroupingLevel
 from move_files_to_main_folder import move_files_to_main_folder
 from select_folder import select_folder
