@@ -40,6 +40,10 @@ class TestGetMatchingFiles:
                 ],
             ),
             (
+                ["IMG-20241005-WA0001.jpg", "VID-20241005-WA0014.mp4"],  # Whatsapp
+                ["IMG-20241005-WA0001.jpg", "VID-20241005-WA0014.mp4"],
+            ),
+            (
                 [
                     "NOT_A_MATCH_20230903.txt",
                     "unsupported_type_20230903.png",

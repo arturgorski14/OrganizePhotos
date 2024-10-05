@@ -206,11 +206,11 @@ class OrganizePhotos:
 
         # Regular expression patterns for the file formats
         patterns = [
-            r"^IMG_\d{8}_.*\.jpg$",  # Matches IMG_YYYYMMDD_*.jpg
+            r"^IMG.\d{8}..*\.jpg$",  # Matches IMG<any>YYYYMMDD<any>*.jpg
             r"^\d{8}_.*\.jpg$",  # Matches YYYYMMDD_*.jpg
-            r"^VID_\d{8}_.*\.mp4$",  # Matches VID_YYYYMMDD_*.mp4
+            r"^VID.\d{8}..*\.mp4$",  # Matches VID<any>YYYYMMDD<any>*.mp4
             r"^\d{8}_.*\.mp4$",  # Matches YYYYMMDD_*.mp4
-            r"^PANO_\d{8}_.*\.jpg$",  # Matches PANO_YYYYMMDD_*.jpg
+            r"^PANO.\d{8}..*\.jpg$",  # Matches PANO<any>YYYYMMDD<any>*.jpg
         ]  # TODO: refactor -> dict. First check file extension. Then check patterns.
 
         matching_files = []
