@@ -1,6 +1,6 @@
 import pytest
 
-from grouping_level import GroupingLevel
+from constants import GroupingLevel
 from organize_photos import OrganizePhotos
 
 

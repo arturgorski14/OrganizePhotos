@@ -70,6 +70,21 @@ files = [
 ]
 
 [[package]]
+name = "configparser"
+version = "7.1.0"
+description = "Updated configparser from stdlib for earlier Pythons."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "configparser-7.1.0-py3-none-any.whl", hash = "sha256:98e374573c4e10e92399651e3ba1c47a438526d633c44ee96143dec26dad4299"},
+    {file = "configparser-7.1.0.tar.gz", hash = "sha256:eb82646c892dbdf773dae19c633044d163c3129971ae09b49410a303b8e0a5f7"},
+]
+
+[package.extras]
+doc = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-lint"]
+test = ["pytest (>=6,!=8.1.*)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-mypy", "pytest-ruff (>=0.2.1)", "types-backports"]
+
+[[package]]
 name = "flake8"
 version = "7.1.1"
 description = "the modular source code checker: pep8 pyflakes and co"
@@ -230,4 +245,4 @@ dev = ["argcomplete", "attrs (>=19.2)", "hypothesis (>=3.56)", "mock", "pygments
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "85f38bdc3d8d8a8228882915fb82d33db2a35375ddfb97d047d7d41db75966f4"
+content-hash = "f1b16471ff66fae075fcb18096ec79d94388df6e1a8254f1ff3d1a7f5fa340b1"
