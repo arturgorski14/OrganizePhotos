@@ -7,9 +7,7 @@ from settings_manager import SettingsManager
 
 def main():
     settings_manager = SettingsManager(configparser.ConfigParser())
-    app = MainWindow(
-        settings_manager
-    )
+    app = MainWindow(settings_manager)
     app.mainloop()
 
 
