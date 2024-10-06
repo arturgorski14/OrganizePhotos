@@ -9,7 +9,7 @@ def main():
     settings_manager = SettingsManager(configparser.ConfigParser())
     app = MainWindow(
         settings_manager
-    )  # TODO: MainWindow doesn't care. OrganizePhotos should be initialized with this.
+    )
     app.mainloop()
 
 
