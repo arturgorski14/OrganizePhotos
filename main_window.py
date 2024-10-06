@@ -6,11 +6,13 @@ from constants import (ACTIVE_BUTTON_COLOR, DEFAULT_BUTTON_COLOR,
 from move_files_to_main_folder import move_files_to_main_folder
 from organize_photos import OrganizePhotos
 from select_folder import select_folder
+from settings_manager import SettingsManager
 
 
 class MainWindow(tk.Tk):
-    def __init__(self, default_grouping_level_value: str):
+    def __init__(self, settings_manager: SettingsManager):
         super().__init__()
+        self.settings_manager = settings_manager
         self.title("Organizer zdjęć")
         self.geometry("400x300")
 
@@ -59,7 +61,7 @@ class MainWindow(tk.Tk):
         )
         self.dropdown_label = tk.Label(concrete_frame, text="Wybierz sposób grupowania")
         self.grouping_variable = tk.StringVar(concrete_frame)
-        self.grouping_variable.set(default_grouping_level_value)
+        self.grouping_variable.set(settings_manager.get_grouping_level())
         self.dropdown = tk.OptionMenu(
             concrete_frame,
             self.grouping_variable,
@@ -115,11 +117,13 @@ class MainWindow(tk.Tk):
         self.__change_button_state(self.run_button, ButtonState.disabled)
         self.__change_button_state(self.folder_btn, ButtonState.disabled)
 
+        grouping_level = self.__convert_grouping_value_back_to_enum()
         command = OrganizePhotos(
             self.folder_label["text"],
-            self.__convert_grouping_value_back_to_enum(),
+            grouping_level,
         )
         command.group()
+        self.settings_manager.set_grouping_level(grouping_level)
 
         self.__change_button_state(self.run_button, ButtonState.normal)
         self.__change_button_state(self.folder_btn, ButtonState.normal)
